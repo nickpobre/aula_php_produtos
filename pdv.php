@@ -1,3 +1,35 @@
+<?php
+include 'bd.php'; // Inclui a conexão com o banco de dados
+
+// Inicializa a variável $produtos
+$produtos = [];
+
+// Busca de produtos
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['busca'])) {
+    $busca = $conn->real_escape_string($_POST['busca']);
+    $query = "SELECT * FROM produtos WHERE nome LIKE '%$busca%' OR cod LIKE '%$busca%'";
+    $result = $conn->query($query);
+    if ($result->num_rows > 0) {
+        $produtos = $result->fetch_all(MYSQLI_ASSOC);
+    }
+}
+
+// Venda de produtos
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['vender'])) {
+    $id = (int)$_POST['id'];
+    $quantidadeVendida = (int)$_POST['quantidadeVendida'];
+    $query = "UPDATE produtos SET quantidade = quantidade - $quantidadeVendida WHERE id = $id AND quantidade >= $quantidadeVendida";
+    $conn->query($query);
+}
+
+// Exclusão de produtos
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excluir'])) {
+    $id = (int)$_POST['id'];
+    $query = "DELETE FROM produtos WHERE id = $id";
+    $conn->query($query);
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -32,7 +64,7 @@
                 <tbody>
                     <?php foreach ($produtos as $produto): ?>
                         <tr>
-                            <td><img src="imagens/<?= $produto['imagem'] ?>" alt="<?= $produto['nome'] ?>" width="50"></td>
+                            <td><img src="uploads/<?= $produto['imagem'] ?>" alt="<?= $produto['nome'] ?>" width="50"></td>
                             <td><?= $produto['cod'] ?></td>
                             <td><?= $produto['nome'] ?></td>
                             <td><?= $produto['quantidade'] ?></td>
