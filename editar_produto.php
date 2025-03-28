@@ -1,5 +1,5 @@
 <?php
-require 'db.php'; // Inclui o arquivo de conexão com o banco de dados
+require 'bd.php'; // Inclui o arquivo de conexão com o banco de dados
 
 // Verifica se o formulário foi enviado
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
